@@ -52,23 +52,21 @@ namespace basis
 			uint32_t id = reserve_id();
 
 			m_ids.push_back(id);
-			m_objects.emplace_back(o);
+			m_objects.push_back(o);
 
 			return id;	
 		}
 
 		void remove(uint32_t id)
 		{
-			BASIS_ASSERT(id < m_lookup.size());
+			BASIS_ASSERT(exists(id));
 
 			uint32_t index = m_lookup[id];
 			uint32_t last = m_objects.size() - 1;
 
-			BASIS_ASSERT(index <= last);
-
 			if (index < last)
 			{
-				m_objects[index] = m_objects[last];
+				m_objects[index] = std::move(m_objects[last]);
 				m_ids[index] = m_ids[last];
 				m_lookup[m_ids[index]] = index;
 			}
