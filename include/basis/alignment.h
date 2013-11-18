@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace basis
 {
 	template<unsigned ALIGN, typename ITYPE>
-	inline ITYPE align_value(const ITYPE & val)
+	inline ITYPE AlignValue(const ITYPE & val)
 	{
 		return (((val) + (ITYPE)(ALIGN-1)) & (~(ITYPE)(ALIGN - 1)));
 	}
