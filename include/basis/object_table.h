@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 
 #include "assert.h"
+#include "handle.h"
 
 namespace basis
 {
@@ -33,71 +34,84 @@ namespace basis
 	class object_table
 	{
 	public:
-		object_table() :
-			m_freelist(0)
-		{}	
+		object_table()
+			:	m_freelist(0)
+		{}
+		
+		explicit object_table(size_t reserve)
+			:	m_objects(count),
+				m_external(count),
+				m_internal(count),
+				m_freelist(0)
+		{}
 
-		uint32_t add(const DATA_TYPE & o)
+		handle32 add(const DATA_TYPE & o)
 		{
-			uint32_t id = reserve_id();
-
-			m_ids.push_back(id);
+			handle32 h = alloc_handle();
 			m_objects.push_back(o);
+			m_external.push_back(h);
 
-			return id;
+			return h;
 		}
 
-		uint32_t add(DATA_TYPE && o)
+		handle32 add(DATA_TYPE && o)
 		{
-			uint32_t id = reserve_id();
-
-			m_ids.push_back(id);
+			handle32 h = alloc_handle();
 			m_objects.push_back(o);
+			m_external.push_back(h);
 
-			return id;	
+			return h;
 		}
 
-		void remove(uint32_t id)
+		void remove(handle32 h)
 		{
-			BASIS_ASSERT(exists(id));
+			BASIS_ASSERT(exists(h));
 
-			uint32_t index = m_lookup[id];
+			handle32 internal = m_internal[h.id];
 			uint32_t last = m_objects.size() - 1;
 
-			if (index < last)
+			if (internal.id < last)
 			{
-				m_objects[index] = std::move(m_objects[last]);
-				m_ids[index] = m_ids[last];
-				m_lookup[m_ids[index]] = index;
+				m_objects[internal.id] = std::move(m_objects[last]);
+				m_external[internal.id] = m_external[last];
+				m_internal[m_external[last].id].id = internal.id;
 			}
 
 			m_objects.pop_back();
-			m_ids.pop_back();
-			m_lookup[id] = m_freelist;
-			m_freelist = id;
+			m_external.pop_back();
+
+			internal.id = m_freelist;
+			internal.generation++;
+			m_internal[h.id] = internal;
+			m_freelist = h.id;
 		}
 
-		bool exists(uint32_t id) const
+		bool exists(handle32 h) const
 		{
-			if (id >= m_lookup.size())
+			if (h.id >= m_internal.size())
 				return false;
-			uint32_t index = m_lookup[id];
-			if (index >= m_ids.size())
+			
+			if (h.generation != m_internal[h.id].generation)
 				return false;
-			return id == m_ids[index];
+
+			BASIS_ASSERT(m_internal[h.id].id < m_external.size());
+			BASIS_ASSERT(m_external[m_internal[h.id].id].id == h.id);
+			BASIS_ASSERT(m_external[m_internal[h.id].id].generation == h.generation);
+
+			return true;
 		}
 
-		DATA_TYPE & lookup(uint32_t id) const
+		DATA_TYPE & lookup(handle32 h) const
 		{
-			BASIS_ASSERT(exists(id));
-			return m_objects[m_lookup[id]];
+			BASIS_ASSERT(exists(h));
+			return m_objects[m_internal[h.id].id];
 		}
 
 		void clear()
 		{
 			m_objects.clear();
-			m_ids.clear();
-			m_lookup.clear();
+			m_external.clear();
+			m_internal.clear();
 			m_freelist = 0;
 		}
 
@@ -118,28 +132,30 @@ namespace basis
 
 	private:
 		std::vector<DATA_TYPE> 	m_objects;
-		std::vector<uint32_t>	m_ids;
-		std::vector<uint32_t>	m_lookup;
+		std::vector<handle32>	m_external;
+		std::vector<handle32>	m_internal;
 		uint32_t				m_freelist;
 
-		uint32_t reserve_id()
+		handle32 alloc_handle()
 		{
-			uint32_t id = m_freelist;
-	
-			BASIS_ASSERT(id <= m_lookup.size());
+			uint32_t index = m_freelist;
 
-			if (id == m_lookup.size())
+			BASIS_ASSERT(index <= m_internal.size());
+
+			if (index == m_internal.size())
 			{
-				m_lookup.push_back(m_objects.size());
+				handle32 internal = { m_objects.size(), 0 };
+				handle32 external = { index, 0 };
+				m_internal.push_back(internal);
 				m_freelist++;
+				return external;
 			}
-			else
-			{
-				m_freelist = m_lookup[id];
-				m_lookup[id] = m_objects.size();
-			}
-
-			return id;
+			
+			handle32 internal = m_internal[index];
+			handle32 external = { index, internal.generation };
+			internal.id = m_objects.size();
+			m_internal[index] = internal;
+			return external;
 		}
 	};
 }
