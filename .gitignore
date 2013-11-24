@@ -1,0 +1,15 @@
+*.exe
+*.dll
+*.lib
+*.so
+*.o
+
+*.DS_Store
+*.suo
+*.sdf
+*.opensdf
+*.filters
+*.user
+
+t2-output/*
+*.tundra2
