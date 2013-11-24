@@ -12,4 +12,4 @@
 *.user
 
 t2-output/*
-*.tundra2
+*.tundra2.*
