@@ -33,7 +33,10 @@ namespace basis
 
 		uint32_t	id : ID_BITS;
 		uint32_t	generation : GEN_BITS;
+
+		static const uint32_t max_id = ((1 << ID_BITS) - 1);
 	};
 
 	typedef generic_handle32<24,8> handle32;
 }
+ 

@@ -68,7 +68,8 @@ namespace basis
 			BASIS_ASSERT(exists(h));
 
 			handle32 internal = m_internal[h.id];
-			uint32_t last = m_objects.size() - 1;
+
+			uint32_t last = (uint32_t)(m_objects.size() - 1);
 
 			if (internal.id < last)
 			{
@@ -144,7 +145,8 @@ namespace basis
 
 			if (index == m_internal.size())
 			{
-				handle32 internal = { m_objects.size(), 0 };
+				BASIS_ASSERT(index <= handle32::max_id);
+				handle32 internal = { (uint32_t) m_objects.size(), 0 };
 				handle32 external = { index, 0 };
 				m_internal.push_back(internal);
 				m_freelist++;
