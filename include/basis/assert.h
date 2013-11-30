@@ -35,7 +35,7 @@ MACRO_BLOCK_END
 	if (!(cnd) && (signal)) { basis::DebugBreak(); } \
 MACRO_BLOCK_END
 
-#define BASIS_ASSERT_FAILED MACRO_BLOCK_BEGIN basis::DebugBreak MACRO_BLOCK_END
+#define BASIS_ASSERT_FAILED MACRO_BLOCK_BEGIN basis::DebugBreak(); MACRO_BLOCK_END
 
 #else
 
