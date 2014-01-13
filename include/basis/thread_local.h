@@ -23,5 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #if defined(_MSC_VER)
-#define thread_local __declspec(thread)
+#define basis_thread_local __declspec(thread)
+#else
+#define basis_thread_local thread_local
 #endif
