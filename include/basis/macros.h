@@ -22,7 +22,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#define MACRO_BLOCK_BEGIN do {
-#define MACRO_BLOCK_END } while((void)0, 0)
+#define BASIS_MACRO_BLOCK_BEGIN do {
+#define BASIS_MACRO_BLOCK_END } while((void)0, 0)
 
-#define BASIS_UNUSED(x) MACRO_BLOCK_BEGIN (void)(true ? (void)0 : ((void)(x))); MACRO_BLOCK_END
+#define BASIS_UNUSED(x) BASIS_MACRO_BLOCK_BEGIN (void)(true ? (void)0 : ((void)(x))); BASIS_MACRO_BLOCK_END
+
+#define BASIS_CONCAT_BASE(x,y) x ## y
+#define BASIS_CONCAT(x,y) BASIS_CONCAT_BASE(x,y)
