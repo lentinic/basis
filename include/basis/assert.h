@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BASIS_MACRO_BLOCK_END
 
 #define BASIS_ASSERT_SIGNAL(cnd, signal) BASIS_MACRO_BLOCK_BEGIN \
-	if (!(cnd) && (signal)) { basis::DebugBreak(); } \
+	if (!(cnd) && (signal)()) { basis::DebugBreak(); } \
 BASIS_MACRO_BLOCK_END
 
 #define BASIS_ASSERT_FAILED BASIS_MACRO_BLOCK_BEGIN basis::DebugBreak(); BASIS_MACRO_BLOCK_END
