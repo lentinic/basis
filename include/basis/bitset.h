@@ -97,8 +97,7 @@ namespace basis
 				{
 					if (i == (end - 1))
 					{
-						size_t leftover = (end * INT_BITS) - m_bitCount;
-						int mask = (~0) >> leftover;
+						int mask = (1 << (m_bitCount % INT_BITS)) - 1;
 						return (v & mask) == mask;
 					}
 					return false;
@@ -193,7 +192,7 @@ namespace basis
 			return (num_bits + (INT_BITS - 1)) / INT_BITS;
 		}
 
-		static const size_t INT_BITS = (sizeof(int) * 8); 
+		static const size_t INT_BITS = (sizeof(int) * 8);
 	};
 }
  
