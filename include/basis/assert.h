@@ -27,20 +27,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if defined(_DEBUG) || defined(BASIS_ASSERT_ENABLED)
 
-#define BASIS_ASSERT(cnd) BASIS_MACRO_BLOCK_BEGIN \
-	if (!(cnd)) { basis::DebugBreak(); } \
-BASIS_MACRO_BLOCK_END
+#define BASIS_ASSERT_BASIC(cnd) \
+	BASIS_MACRO_BLOCK_BEGIN \
+		if (!(cnd)) { basis::DebugBreak(); } \
+	BASIS_MACRO_BLOCK_END
 
-#define BASIS_ASSERT_SIGNAL(cnd, signal) BASIS_MACRO_BLOCK_BEGIN \
-	if (!(cnd) && (signal)()) { basis::DebugBreak(); } \
-BASIS_MACRO_BLOCK_END
+#define BASIS_ASSERT_SIGNAL(cnd, signal) \
+	BASIS_MACRO_BLOCK_BEGIN \
+		if (!(cnd) && (signal)()) { basis::DebugBreak(); } \
+	BASIS_MACRO_BLOCK_END
 
 #define BASIS_ASSERT_FAILED BASIS_MACRO_BLOCK_BEGIN basis::DebugBreak(); BASIS_MACRO_BLOCK_END
 
 #else
 
-#define BASIS_ASSERT(cnd) BASIS_UNUSED(cnd)
+#define BASIS_ASSERT_BASIC(cnd) BASIS_UNUSED(cnd)
 #define BASIS_ASSERT_SIGNAL(cnd, signal) BASIS_UNUSED(cnd); BASIS_UNUSED(signal)
 #define BASIS_ASSERT_FAILED
 
 #endif
+
+#define ASSERT_SELECTOR(tuple) ASSERT_SELECTOR_IMPL tuple
+#define ASSERT_SELECTOR_IMPL(_1,_2,N,...) N
+
+#define BASIS_ASSERT(...) \
+	ASSERT_SELECTOR((__VA_ARGS__,BASIS_ASSERT_SIGNAL,BASIS_ASSERT_BASIC))(__VA_ARGS__)

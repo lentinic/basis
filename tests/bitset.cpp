@@ -17,7 +17,7 @@ void test_set_or()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT_SIGNAL(a[i] == ((i & 7) == 0 ? 1 : 0), [&]() -> bool {
+		BASIS_ASSERT(a[i] == ((i & 7) == 0 ? 1 : 0), [&]() -> bool {
 			incorrect++;
 			return false;
 		});
@@ -43,7 +43,7 @@ void test_set_xor()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT_SIGNAL(a[i] == (((i & 3) == 0 && (i & 7) != 0) ? 1 : 0), [&]() -> bool {
+		BASIS_ASSERT(a[i] == (((i & 3) == 0 && (i & 7) != 0) ? 1 : 0), [&]() -> bool {
 			incorrect++;
 			return false;
 		});
@@ -70,7 +70,7 @@ void test_set_and()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT_SIGNAL(a[i] == (((i & 3) == 0 && (i % 3) == 0) ? 1 : 0), [&]() -> bool {
+		BASIS_ASSERT(a[i] == (((i & 3) == 0 && (i % 3) == 0) ? 1 : 0), [&]() -> bool {
 			incorrect++;
 			return false;
 		});

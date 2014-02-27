@@ -31,7 +31,6 @@ namespace basis
 #elif defined(__GNUC__)
 		__asm__ ("int $3");
 #else
-		#warning "DebugBreak using a generic null dereference implementation"
 		*((int *) 0) = 3;
 #endif
 	}
