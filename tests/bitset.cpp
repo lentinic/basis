@@ -1,9 +1,15 @@
-#include <basis/assert.h>
 #include <basis/bitset.h>
-#include <basis/timer.h>
-#include <iostream>
+#include <basis/unit_test.h>
 
-unsigned ErrorCount = 0;
+void test_set_or();
+void test_set_xor();
+void test_set_and();
+
+BASIS_TEST_LIST_BEGIN()
+	BASIS_DECLARE_TEST(test_set_or)
+	BASIS_DECLARE_TEST(test_set_xor)
+	BASIS_DECLARE_TEST(test_set_and)
+BASIS_TEST_LIST_END()
 
 void test_set_or()
 {
@@ -17,17 +23,14 @@ void test_set_or()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT(a[i] == ((i & 7) == 0 ? 1 : 0), [&]() -> bool {
+
+		if (a[i] != ((i & 7) == 0 ? 1 : 0))
+		{
 			incorrect++;
-			return false;
-		});
+		}
 	}
 
-	if (incorrect > 0)
-	{
-		ErrorCount++;
-		std::cout<<"Error: There were "<<incorrect<<" incorrectly set bits in test_set_or."<<std::endl;
-	}
+	BASIS_TEST_VERIFY_MSG(incorrect == 0, "%d incorrectly set bits", incorrect);
 }
 
 void test_set_xor()
@@ -43,17 +46,13 @@ void test_set_xor()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT(a[i] == (((i & 3) == 0 && (i & 7) != 0) ? 1 : 0), [&]() -> bool {
+		if (a[i] != (((i & 3) == 0 && (i & 7) != 0) ? 1 : 0))
+		{
 			incorrect++;
-			return false;
-		});
+		}
 	}
 
-	if (incorrect > 0)
-	{
-		ErrorCount++;
-		std::cout<<"Error: There were "<<incorrect<<" incorrectly set bits in test_set_xor."<<std::endl;
-	}
+	BASIS_TEST_VERIFY_MSG(incorrect == 0, "%d incorrectly set bits", incorrect);
 }
 
 void test_set_and()
@@ -70,35 +69,18 @@ void test_set_and()
 	int incorrect = 0;
 	for (int i=0; i<count; i++)
 	{
-		BASIS_ASSERT(a[i] == (((i & 3) == 0 && (i % 3) == 0) ? 1 : 0), [&]() -> bool {
+		if (a[i] != (((i & 3) == 0 && (i % 3) == 0) ? 1 : 0))
+		{
 			incorrect++;
-			return false;
-		});
+		}
 	}
 
-	if (incorrect > 0)
-	{
-		ErrorCount++;
-		std::cout<<"Error: There were "<<incorrect<<" incorrectly set bits in test_set_and."<<std::endl;
-	}
+	BASIS_TEST_VERIFY_MSG(incorrect == 0, "%d incorrectly set bits", incorrect);
 }
 
 int main()
 {
-	auto start = basis::GetTimestamp();
-	test_set_or();
-	test_set_xor();
-	test_set_and();
-	float elapsed = basis::GetTimeElapsedMS(start) / 1000.f;
-
-	if (ErrorCount)
-	{
-		std::cout<<"bitset tests completed with "<<ErrorCount<<" error(s) in "<<elapsed<<" seconds."<<std::endl;
-	}
-	else
-	{
-		std::cout<<"bitset tests completed successfully in "<<elapsed<<" seconds."<<std::endl;
-	}
+	BASIS_RUN_TESTS()
 
 	return 0;
 }
