@@ -70,7 +70,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		fprintf(stdout, "Running test \"%s\"\n", TestList[CurrentTest].TestName); \
 		TestList[CurrentTest].TestFunction(); \
 	} \
-	fprintf(stdout, "%d tests completed in %.2f seconds.  Errors: %d\n", \
+	fprintf(stdout, "%u tests completed in %.2f seconds.  Errors: %u\n", \
 		TestCount, basis::GetTimeElapsedMS(start)/ 1000.f, ErrorCount);
 
 
