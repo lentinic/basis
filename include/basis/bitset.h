@@ -48,6 +48,45 @@ namespace basis
 				m_bits(bits, bits + GetNumIntegersForBitcount(num_bits))
 		{}
 
+		void push_back(bool b)
+		{
+			size_t num_bits = m_bitCount++;
+			size_t num_ints = m_bits.size();
+			if (GetNumIntegersForBitcount(num_bits + 1) > num_ints)
+			{
+				m_bits.push_back(b ? 1 : 0);
+			}	
+			else
+			{
+				set_bit(num_bits, b);
+			}
+		}
+
+		bool pop_back()
+		{
+			BASIS_ASSERT(m_bitCount > 0);
+
+			size_t num_bits = m_bitCount--;
+			bool r = get_bit(num_bits - 1);
+			if ((num_bits % INT_BITS) == 1)
+			{
+				m_bits.pop_back();
+			}
+			return r;
+		}
+
+		size_t count() const
+		{
+			return m_bitCount;
+		}
+
+		bool get_bit(size_t index) const
+		{
+			size_t int_index, bit_index;
+			bit_index_to_coordinates(index, &int_index, &bit_index);
+			return (m_bits[int_index] >> bit_index) & 1;
+		}
+
 		void set_bit(size_t index, bool b)
 		{
 			size_t int_index, bit_index;
@@ -56,28 +95,12 @@ namespace basis
 			m_bits[int_index] = ((b ? 1 : 0) << bit_index) | (m_bits[int_index] & ~(1 << bit_index));
 		}
 
-		void set_or(size_t index, bool b)
+		void toggle_bit(size_t index)
 		{
 			size_t int_index, bit_index;
-			bit_index_to_coordinates(index, &int_index, &bit_index);
+			bit_index_to_coordinates(index, &int_index, &bit_index);	
 
-			m_bits[int_index] = ((b ? 1 : 0) << bit_index) | m_bits[int_index];
-		}
-
-		void set_xor(size_t index, bool b)
-		{
-			size_t int_index, bit_index;
-			bit_index_to_coordinates(index, &int_index, &bit_index);
-
-			m_bits[int_index] = ((b ? 1 : 0) << bit_index) ^ m_bits[int_index];
-		}
-
-		void set_and(size_t index, bool b)
-		{
-			size_t int_index, bit_index;
-			bit_index_to_coordinates(index, &int_index, &bit_index);
-
-			m_bits[int_index] = ((~0) ^ ((b ? 0 : 1) << bit_index)) & m_bits[int_index];
+			m_bits[int_index] ^= (1 << bit_index);	
 		}
 
 		void set_all_one()
@@ -90,23 +113,20 @@ namespace basis
 			memset(&m_bits[0], 0xff, m_bits.size() * sizeof(int));
 		}
 
-		bool test_all_one()
+		bool test_all(bool b)
 		{ 
-			for (size_t i=0, end=m_bits.size(); i<end; i++)
+			int testVal = b ? ~0 : 0;
+			size_t last = m_bits.size() - 1;
+			for (size_t i=0; i<last; i++)
 			{
-				int v = m_bits[i];
-				if (v != (~0))
+				if (m_bits[i] != testVal)
 				{
-					if (i == (end - 1))
-					{
-						int mask = (1 << (m_bitCount % INT_BITS)) - 1;
-						return (v & mask) == mask;
-					}
 					return false;
 				}
 			}
 
-			return true;
+			int mask = (1 << (m_bitCount % INT_BITS)) - 1;
+			return (m_bits[last] & mask) == (testVal & mask);
 		}
 
 		bitset operator | (const bitset & b) const
@@ -168,11 +188,9 @@ namespace basis
 			return bitset(bits, max_bits);
 		}
 
-		int operator [] (size_t index) const
+		bool operator [] (size_t index) const
 		{
-			size_t int_index, bit_index;
-			bit_index_to_coordinates(index, &int_index, &bit_index);
-			return (m_bits[int_index] >> bit_index) & 1;
+			return get_bit(index);
 		}
 
 	private:
