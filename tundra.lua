@@ -13,10 +13,17 @@ Build {
 			}
 		}
 		Program {
-			Name = "bitset",
+			Name = "bitvector",
 			Config = "*",
 			Sources = {
-				"tests/bitset.cpp"
+				"tests/bitvector.cpp"
+			}
+		}
+		Program {
+			Name = "shared_mutex",
+			Config = "*",
+			Sources = {
+				"tests/shared_mutex.cpp"
 			}
 		}
 		Default "signals"

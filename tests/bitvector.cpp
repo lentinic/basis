@@ -1,4 +1,4 @@
-#include <basis/bitset.h>
+#include <basis/bitvector.h>
 #include <basis/unit_test.h>
 
 void test_push_get_pop();
@@ -16,7 +16,7 @@ void test_push_get_pop()
 	int disagree = 0;
 	int incorrect = 0;
 	int count = (rand() & 127) + 128;
-	basis::bitset a;
+	basis::bitvector a;
 
 	for (int i=0; i<count; i++)
 	{
@@ -39,7 +39,7 @@ void test_push_get_pop()
 		}
 	}
 
-	BASIS_TEST_VERIFY_MSG(a.count() == 0, "bitset has an unexpected size - %d; expected 0", a.count());
+	BASIS_TEST_VERIFY_MSG(a.count() == 0, "bitvector has an unexpected size - %d; expected 0", a.count());
 	BASIS_TEST_VERIFY_MSG(disagree == 0, "get_bit disagreed with pop_back %d times", disagree);
 	BASIS_TEST_VERIFY_MSG(incorrect == 0, "%d incorrectly set bits", incorrect);
 }
@@ -48,7 +48,7 @@ void test_set_toggle()
 {
 	int incorrect = 0;
 	int count = (rand() & 127) + 128;
-	basis::bitset a(count);
+	basis::bitvector a(count);
 
 	for (int i=0; i<count; i++)
 	{
@@ -77,10 +77,10 @@ void test_bitwise_operators()
 	int or_incorrect = 0;
 	int and_incorrect = 0;
 
-	basis::bitset a(count);
-	basis::bitset b(count);
-	basis::bitset c(count * 2);
-	basis::bitset d(count * 2);
+	basis::bitvector a(count);
+	basis::bitvector b(count);
+	basis::bitvector c(count * 2);
+	basis::bitvector d(count * 2);
 
 	for (int i=0; i<count; i++)
 	{
@@ -96,7 +96,7 @@ void test_bitwise_operators()
 
 	a = a ^ b; // multiple of 2 or 5 but not both
 
-	BASIS_TEST_VERIFY_MSG(a.count() == count, "bitset 'a' had an unexpected size - %d; expected - %d", a.count(), count);
+	BASIS_TEST_VERIFY_MSG(a.count() == count, "bitvector 'a' had an unexpected size - %d; expected - %d", a.count(), count);
 
 	for (int i=0; i<count; i++)
 	{
@@ -110,7 +110,7 @@ void test_bitwise_operators()
 
 	c = c | d; // all multiples of 3 and 7
 
-	BASIS_TEST_VERIFY_MSG(c.count() == (count*2), "bitset 'c' had an unexpected size - %d; expected - %d", c.count(), (count*2));
+	BASIS_TEST_VERIFY_MSG(c.count() == (count*2), "bitvector 'c' had an unexpected size - %d; expected - %d", c.count(), (count*2));
 
 	for (int i=0; i<(count*2); i++)
 	{
@@ -124,7 +124,7 @@ void test_bitwise_operators()
 
 	d = c & a; // all multiples of 3 and 7 that are either multiples of 2 or 5 (but not both) and that are less than count
 
-	BASIS_TEST_VERIFY_MSG(d.count() == (count*2), "bitset 'd' had an unexpected size - %d; expected - %d", d.count(), (count*2));
+	BASIS_TEST_VERIFY_MSG(d.count() == (count*2), "bitvector 'd' had an unexpected size - %d; expected - %d", d.count(), (count*2));
 
 	for (int i=0; i<(count*2); i++)
 	{

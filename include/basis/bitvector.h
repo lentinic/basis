@@ -31,19 +31,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	class bitset
+	class bitvector
 	{
 	public:
-		bitset()
+		bitvector()
 			:	m_bitCount(0)
 		{}
 
-		explicit bitset(size_t count)
+		explicit bitvector(size_t count)
 			:	m_bitCount(count),
 				m_bits(GetNumIntegersForBitcount(count))
 		{}
 
-		bitset(int * bits, size_t num_bits)
+		bitvector(int * bits, size_t num_bits)
 			:	m_bitCount(num_bits), 
 				m_bits(bits, bits + GetNumIntegersForBitcount(num_bits))
 		{}
@@ -129,7 +129,7 @@ namespace basis
 			return (m_bits[last] & mask) == (testVal & mask);
 		}
 
-		bitset operator | (const bitset & b) const
+		bitvector operator | (const bitvector & b) const
 		{
 			size_t max_bits = std::max(m_bitCount, b.m_bitCount);
 			size_t min_bits = std::min(m_bitCount, b.m_bitCount);
@@ -147,10 +147,10 @@ namespace basis
 				bits[i] = (m_bitCount > b.m_bitCount) ? m_bits[i] : b.m_bits[i];
 			}
 
-			return bitset(bits, max_bits);
+			return bitvector(bits, max_bits);
 		}
 
-		bitset operator & (const bitset & b) const
+		bitvector operator & (const bitvector & b) const
 		{
 			size_t max_bits = std::max(m_bitCount, b.m_bitCount);
 			size_t min_bits = std::min(m_bitCount, b.m_bitCount);
@@ -164,10 +164,10 @@ namespace basis
 				bits[i] = m_bits[i] & b.m_bits[i];
 			}
 
-			return bitset(bits, max_bits);
+			return bitvector(bits, max_bits);
 		}
 
-		bitset operator ^ (const bitset & b) const
+		bitvector operator ^ (const bitvector & b) const
 		{
 			size_t max_bits = std::max(m_bitCount, b.m_bitCount);
 			size_t min_bits = std::min(m_bitCount, b.m_bitCount);
@@ -185,7 +185,7 @@ namespace basis
 				bits[i] = (m_bitCount > b.m_bitCount) ? m_bits[i] : b.m_bits[i];
 			}
 
-			return bitset(bits, max_bits);
+			return bitvector(bits, max_bits);
 		}
 
 		bool operator [] (size_t index) const
