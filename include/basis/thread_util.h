@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	inline void cpu_pause()
+	inline void cpu_yield()
 	{
 #if defined(X86)
 		_mm_pause();
