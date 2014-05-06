@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include <atomic>
+#include <utility>
 #include "queue_access_policy.h"
 #include "assert.h"
 
