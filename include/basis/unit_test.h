@@ -59,7 +59,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		if (!(cnd)) \
 		{ \
 			ErrorCount++; \
-			fprintf(stderr, "Error (%s:%d): " ## fmt ## "\n", __FILE__, __LINE__, __VA_ARGS__); \
+			fprintf(stderr, "Error (%s:%d): "  fmt  "\n", __FILE__, __LINE__, __VA_ARGS__); \
 		} \
 	BASIS_MACRO_BLOCK_END
 

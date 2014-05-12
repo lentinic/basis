@@ -24,9 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-
 #if defined(WIN32)
 #include <windows.h>
+#elif defined(LINUX)
+#include <time.h>
 #endif
 
 namespace basis
@@ -36,23 +37,28 @@ namespace basis
 
 	timestamp GetTimestamp()
 	{
-#if defined(WIN32)
 		timestamp now;
+#if defined(WIN32)
 		QueryPerformanceCounter((LARGE_INTEGER *)&now);
-		return now;
+#elif defined(LINUX)
+		timespec t;
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
+		now = t.tv_sec * 1000000000 + t.tv_nsec;
 #else
 		#error "basis::GetTimestamp not implemented for target platform"
 #endif
+		return now;
 	}
 
 	timedelta GetTimeElapsedMS(timestamp start)
 	{
+		timestamp now = GetTimestamp();
 #if defined(WIN32)
-		timestamp now;
 		uint64_t freq;
-		QueryPerformanceCounter((LARGE_INTEGER *)&now);
 		QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
 		return ((now - start) * 1000) / freq;
+#elif defined(LINUX)
+		return (now - start) / (1000000); 
 #else
 		#error "basis::GetTimeElapsedMS not implemented for target platform"
 #endif

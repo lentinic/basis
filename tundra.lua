@@ -10,7 +10,7 @@ Build {
 			Config = "*",
 			Sources = {
 				"tests/signal.cpp"
-			}
+			},
 		}
 		Program {
 			Name = "bitvector",
@@ -24,6 +24,13 @@ Build {
 			Config = "*",
 			Sources = {
 				"tests/shared_mutex.cpp"
+			}
+		}
+		Program {
+			Name = "atomic_queue",
+			Config = "*",
+			Sources = {
+				"tests/atomic_queue.cpp"
 			}
 		}
 		Default "signals"
@@ -43,6 +50,19 @@ Build {
 				},
 				GENERATE_PDB = "1"
 			}
+		},
+		{
+			Name = "linux-gcc",
+			DefaultOnHost =  "linux" ,
+			Tools = { { "gcc", TargetArch = "x64" } },
+			Env = {
+				CPPDEFS = { "LINUX" },
+				CXXOPTS = { "-std=c++11" },
+				PROGOPTS = { "-pthread" }
+			},
+			ReplaceEnv = {
+				LD = { "$(CXX)" ; Config = { "*-gcc-*" } },
+			},
 		},
 	},
 
