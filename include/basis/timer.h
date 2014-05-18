@@ -24,44 +24,61 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-#if defined(WIN32)
+#if defined(BASIS_PLATFORM_WINDOWS)
 #include <windows.h>
-#elif defined(LINUX)
+#elif defined(BASIS_PLATFORM_LINUX)
 #include <time.h>
 #endif
 
 namespace basis
 {
-	typedef uint64_t timestamp;
-	typedef uint64_t timedelta;
+	typedef uint64_t tick_t;
 
-	timestamp GetTimestamp()
+	tick_t GetTimestamp()
 	{
-		timestamp now;
-#if defined(WIN32)
+		tick_t now;
+#if defined(BASIS_PLATFORM_WINDOWS)
 		QueryPerformanceCounter((LARGE_INTEGER *)&now);
-#elif defined(LINUX)
+#elif defined(BASIS_PLATFORM_LINUX)
 		timespec t;
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
 		now = t.tv_sec * 1000000000 + t.tv_nsec;
 #else
-		#error "basis::GetTimestamp not implemented for target platform"
 #endif
 		return now;
 	}
 
-	timedelta GetTimeElapsedMS(timestamp start)
+	tick_t GetTimerFrequency()
 	{
-		timestamp now = GetTimestamp();
-#if defined(WIN32)
-		uint64_t freq;
-		QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
-		return ((now - start) * 1000) / freq;
-#elif defined(LINUX)
-		return (now - start) / (1000000); 
+#if defined(BASIS_PLATFORM_WINDOWS)
+		tick_t freq;
+		QueryPerformanceCounter((LARGE_INTEGER *)&freq);
+		return freq;
+#elif defined(BASIS_PLATFORM_LINUX)
+		return 1000000000;
 #else
-		#error "basis::GetTimeElapsedMS not implemented for target platform"
-#endif
+#endif	
+	}
+
+	tick_t GetTimeElapsedMS(tick_t start)
+	{
+		tick_t now = GetTimestamp();
+		tick_t freq = GetTimerFrequency();
+		return ((now - start) * 1000) / freq;
+	}
+
+	tick_t GetTimeElapsedUS(tick_t start)
+	{
+		tick_t now = GetTimestamp();
+		tick_t freq = GetTimerFrequency();
+		return ((now - start) * 1000000) / freq;
+	}
+
+	tick_t GetTimeElapsedNS(tick_t start)
+	{
+		tick_t now = GetTimestamp();
+		tick_t freq = GetTimerFrequency();
+		return ((now - start) * 1000000000) / freq;
 	}
 }
  

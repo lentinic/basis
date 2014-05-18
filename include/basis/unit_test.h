@@ -64,7 +64,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	BASIS_MACRO_BLOCK_END
 
 #define BASIS_RUN_TESTS() \
-	basis::timestamp start = basis::GetTimestamp(); \
+	auto start = basis::GetTimestamp(); \
 	for (CurrentTest=0; CurrentTest<TestCount; CurrentTest++) \
 	{ \
 		fprintf(stdout, "Running test \"%s\"\n", TestList[CurrentTest].TestName); \

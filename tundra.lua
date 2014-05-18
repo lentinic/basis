@@ -26,13 +26,6 @@ Build {
 				"tests/shared_mutex.cpp"
 			}
 		}
-		Program {
-			Name = "atomic_queue",
-			Config = "*",
-			Sources = {
-				"tests/atomic_queue.cpp"
-			}
-		}
 		Default "signals"
 	end,
 	Configs = {
@@ -41,7 +34,7 @@ Build {
 			DefaultOnHost = "windows",
 			Tools = { { "msvc"; TargetArch = "x64" } },
 			Env = {
-				CPPDEFS = { "WIN32" },
+				CPPDEFS = { "BASIS_PLATFORM_WINDOWS" },
 				CXXOPTS = { 
 					"/W4", 
 					"/EHsc",
@@ -56,7 +49,7 @@ Build {
 			DefaultOnHost =  "linux" ,
 			Tools = { { "gcc", TargetArch = "x64" } },
 			Env = {
-				CPPDEFS = { "LINUX" },
+				CPPDEFS = { "BASIS_PLATFORM_LINUX" },
 				CXXOPTS = { "-std=c++11" },
 				PROGOPTS = { "-pthread" }
 			},
