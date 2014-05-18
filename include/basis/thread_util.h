@@ -31,3 +31,9 @@ namespace basis
 #endif
 	}
 }
+
+#if defined(_MSC_VER)
+#define basis_thread_local __declspec(thread)
+#else
+#define basis_thread_local thread_local
+#endif
