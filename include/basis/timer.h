@@ -41,8 +41,9 @@ namespace basis
 		QueryPerformanceCounter((LARGE_INTEGER *)&now);
 #elif defined(BASIS_PLATFORM_LINUX)
 		timespec t;
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
-		now = t.tv_sec * 1000000000 + t.tv_nsec;
+		clock_gettime(CLOCK_MONOTONIC, &t);
+		now = t.tv_sec * 1000000000 +
+			  t.tv_nsec;
 #else
 #endif
 		return now;
