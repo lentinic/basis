@@ -47,21 +47,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	{ &fn, #fn },
 
 #define BASIS_TEST_VERIFY(cnd) \
-	BASIS_MACRO_BLOCK_BEGIN \
+	BASIS_MACRO_BLOCK( \
 		if (!(cnd)) \
 		{ \
 			ErrorCount++; \
 		} \
-	BASIS_MACRO_BLOCK_END
+	)
 
 #define BASIS_TEST_VERIFY_MSG(cnd, fmt, ...) \
-	BASIS_MACRO_BLOCK_BEGIN \
+	BASIS_MACRO_BLOCK( \
 		if (!(cnd)) \
 		{ \
 			ErrorCount++; \
 			fprintf(stderr, "Error (%s:%d): "  fmt  "\n", __FILE__, __LINE__, __VA_ARGS__); \
 		} \
-	BASIS_MACRO_BLOCK_END
+	)
 
 #define BASIS_RUN_TESTS() \
 	auto start = basis::GetTimestamp(); \
