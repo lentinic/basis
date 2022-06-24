@@ -28,10 +28,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if defined(_DEBUG) || defined(BASIS_ASSERT_ENABLED)
 
 #define BASIS_ASSERT_BASIC(cnd) \
-	BASIS_MACRO_BLOCK( if (!(cnd)) { basis::DebugBreak(); } )
+    BASIS_MACRO_BLOCK( if (!(cnd)) { basis::DebugBreak(); } )
 
 #define BASIS_ASSERT_SIGNAL(cnd, signal) \
-	BASIS_MACRO_BLOCK( if (!(cnd) && (signal)()) { basis::DebugBreak(); } )
+    BASIS_MACRO_BLOCK( if (!(cnd) && (signal)()) { basis::DebugBreak(); } )
 
 #define BASIS_ASSERT_FAILED BASIS_MACRO_BLOCK(basis::DebugBreak();)
 

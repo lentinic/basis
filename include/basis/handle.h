@@ -26,16 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	template<class T, class STORAGE = uint32_t, unsigned ID_BITS = 24, unsigned GEN_BITS = 8>
-	struct handle
-	{
-		static_assert((ID_BITS + GEN_BITS) == (sizeof(STORAGE) * 8), 
-			"handle bit total must match the specified storage type");
+    template<class T, class STORAGE = uint32_t, unsigned ID_BITS = 24, unsigned GEN_BITS = 8>
+    struct handle
+    {
+        static_assert((ID_BITS + GEN_BITS) == (sizeof(STORAGE) * 8), 
+            "handle bit total must match the specified storage type");
 
-		STORAGE	id : ID_BITS;
-		STORAGE	generation : GEN_BITS;
+        STORAGE    id : ID_BITS;
+        STORAGE    generation : GEN_BITS;
 
-		static const uint32_t max_id = ((1 << ID_BITS) - 1);
-	};
+        static const uint32_t max_id = ((1 << ID_BITS) - 1);
+    };
 }
  

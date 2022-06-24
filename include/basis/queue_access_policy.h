@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	enum class queue_access_policy
-	{
-		spsc,
-		spmc,
-		mpsc,
-		mpmc
-	};
+    enum class queue_access_policy
+    {
+        spsc,
+        spmc,
+        mpsc,
+        mpmc
+    };
 }

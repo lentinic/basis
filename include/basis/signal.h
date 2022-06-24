@@ -29,38 +29,38 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	template<class SIGNATURE> class signal;
+    template<class SIGNATURE> class signal;
 
-	template<class... PARAMETERS>
-	class signal<void(PARAMETERS...)>
-	{
-	public:
-		typedef std::function<void(PARAMETERS...)> function_type;
+    template<class... PARAMETERS>
+    class signal<void(PARAMETERS...)>
+    {
+    public:
+        typedef std::function<void(PARAMETERS...)> function_type;
 
-		handle connect(function_type fn)
-		{
-			return m_listeners.add(fn);
-		}
+        handle connect(function_type fn)
+        {
+            return m_listeners.add(fn);
+        }
 
-		void disconnect(handle id)
-		{
-			m_listeners.remove(id);
-		}
+        void disconnect(handle id)
+        {
+            m_listeners.remove(id);
+        }
 
-		void reset()
-		{
-			m_listeners.clear();
-		}
+        void reset()
+        {
+            m_listeners.clear();
+        }
 
-		void operator () (PARAMETERS... args)
-		{
-			for (auto fn : m_listeners)
-			{
-				fn(args...);
-			}
-		}
+        void operator () (PARAMETERS... args)
+        {
+            for (auto fn : m_listeners)
+            {
+                fn(args...);
+            }
+        }
 
-	private:
-		object_table<function_type> m_listeners;
-	};
+    private:
+        object_table<function_type> m_listeners;
+    };
 }

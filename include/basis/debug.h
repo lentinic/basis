@@ -24,14 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	inline void DebugBreak()
-	{
+    inline void DebugBreak()
+    {
 #if defined(_MSC_VER)
-		__debugbreak();
+        __debugbreak();
 #elif defined(__GNUC__)
-		__asm__ ("int $3");
+        __asm__ ("int $3");
 #else
-		*((int *) 0) = 3;
+        *((int *) 0) = 3;
 #endif
-	}
+    }
 }

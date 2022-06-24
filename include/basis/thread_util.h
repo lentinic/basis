@@ -24,12 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	inline void cpu_yield()
-	{
+    inline void cpu_yield()
+    {
 #if defined(X86)
-		_mm_pause();
+        _mm_pause();
 #endif
-	}
+    }
 }
 
 #if defined(_MSC_VER)
