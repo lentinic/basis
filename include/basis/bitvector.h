@@ -110,7 +110,7 @@ namespace basis
 
 		void set_all_zero()
 		{
-			memset(&m_bits[0], 0xff, m_bits.size() * sizeof(int));
+			memset(&m_bits[0], 0, m_bits.size() * sizeof(int));
 		}
 
 		bool test_all(bool b)
