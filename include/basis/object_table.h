@@ -47,29 +47,29 @@ namespace basis
 				m_freelist(0)
 		{}
 
-		handle32 add(const DATA_TYPE & o)
+		handle add(const DATA_TYPE & o)
 		{
-			handle32 h = alloc_handle();
+			handle h = alloc_handle();
 			m_objects.push_back(o);
 			m_external.push_back(h);
 
 			return h;
 		}
 
-		handle32 add(DATA_TYPE && o)
+		handle add(DATA_TYPE && o)
 		{
-			handle32 h = alloc_handle();
+			handle h = alloc_handle();
 			m_objects.push_back(o);
 			m_external.push_back(h);
 
 			return h;
 		}
 
-		void remove(handle32 h)
+		void remove(handle h)
 		{
 			BASIS_ASSERT(exists(h));
 
-			handle32 internal = m_internal[h.id];
+			handle internal = m_internal[h.id];
 
 			uint32_t last = (uint32_t)(m_objects.size() - 1);
 
@@ -89,7 +89,7 @@ namespace basis
 			m_freelist = h.id;
 		}
 
-		bool exists(handle32 h) const
+		bool exists(handle h) const
 		{
 			if (h.id >= m_internal.size())
 				return false;
@@ -104,7 +104,7 @@ namespace basis
 			return true;
 		}
 
-		DATA_TYPE & lookup(handle32 h) const
+		DATA_TYPE & lookup(handle h) const
 		{
 			BASIS_ASSERT(exists(h));
 			return m_objects[m_internal[h.id].id];
@@ -135,11 +135,11 @@ namespace basis
 
 	private:
 		std::vector<DATA_TYPE> 	m_objects;
-		std::vector<handle32>	m_external;
-		std::vector<handle32>	m_internal;
+		std::vector<handle>	m_external;
+		std::vector<handle>	m_internal;
 		uint32_t				m_freelist;
 
-		handle32 alloc_handle()
+		handle alloc_handle()
 		{
 			uint32_t index = m_freelist;
 
@@ -147,16 +147,16 @@ namespace basis
 
 			if (index == m_internal.size())
 			{
-				BASIS_ASSERT(index <= handle32::max_id);
-				handle32 internal = { (uint32_t) m_objects.size(), 0 };
-				handle32 external = { index, 0 };
+				BASIS_ASSERT(index <= handle::max_id);
+				handle internal = { (uint32_t) m_objects.size(), 0 };
+				handle external = { index, 0 };
 				m_internal.push_back(internal);
 				m_freelist++;
 				return external;
 			}
 			
-			handle32 internal = m_internal[index];
-			handle32 external = { index, internal.generation };
+			handle internal = m_internal[index];
+			handle external = { index, internal.generation };
 			internal.id = m_objects.size();
 			m_internal[index] = internal;
 			return external;

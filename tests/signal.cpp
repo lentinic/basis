@@ -34,11 +34,11 @@ int main(int argc, char * argv[])
 	
 	basis::signal<void()> sig;
 
-	basis::handle32 h0 = sig.connect(&Handler0);
-	basis::handle32 h1 = sig.connect(&Handler1);
-	basis::handle32 h2 = sig.connect(&Handler2);
-	basis::handle32 h3 = sig.connect(&Handler3);
-	basis::handle32 h4 = sig.connect(&Handler3);
+	basis::handle h0 = sig.connect(&Handler0);
+	basis::handle h1 = sig.connect(&Handler1);
+	basis::handle h2 = sig.connect(&Handler2);
+	basis::handle h3 = sig.connect(&Handler3);
+	basis::handle h4 = sig.connect(&Handler3);
 
 	BASIS_ASSERT(h0.id != h1.id);
 	BASIS_ASSERT(h0.id != h2.id);

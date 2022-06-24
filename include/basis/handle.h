@@ -26,17 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace basis
 {
-	template<unsigned ID_BITS, unsigned GEN_BITS>
-	struct generic_handle32
+	template<class T, class STORAGE = uint32_t, unsigned ID_BITS = 24, unsigned GEN_BITS = 8>
+	struct handle
 	{
-		static_assert((ID_BITS + GEN_BITS) == 32, "generic_handle32 bit total must equal 32");
+		static_assert((ID_BITS + GEN_BITS) == (sizeof(STORAGE) * 8), 
+			"handle bit total must match the specified storage type");
 
-		uint32_t	id : ID_BITS;
-		uint32_t	generation : GEN_BITS;
+		STORAGE	id : ID_BITS;
+		STORAGE	generation : GEN_BITS;
 
 		static const uint32_t max_id = ((1 << ID_BITS) - 1);
 	};
-
-	typedef generic_handle32<24,8> handle32;
 }
  

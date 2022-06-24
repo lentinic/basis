@@ -37,12 +37,12 @@ namespace basis
 	public:
 		typedef std::function<void(PARAMETERS...)> function_type;
 
-		handle32 connect(function_type fn)
+		handle connect(function_type fn)
 		{
 			return m_listeners.add(fn);
 		}
 
-		void disconnect(handle32 id)
+		void disconnect(handle id)
 		{
 			m_listeners.remove(id);
 		}
