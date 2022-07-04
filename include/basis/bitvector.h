@@ -20,17 +20,17 @@ namespace basis
     {
     public:
         bitvector()
-            :    m_bitCount(0)
+        :   m_bitCount(0)
         {}
 
         explicit bitvector(size_t count)
-            :    m_bitCount(count),
-                m_bits(GetNumIntegersForBitcount(count))
+        :   m_bitCount(count),
+            m_bits(GetNumIntegersForBitcount(count))
         {}
 
-        bitvector(int * bits, size_t num_bits)
-            :    m_bitCount(num_bits), 
-                m_bits(bits, bits + GetNumIntegersForBitcount(num_bits))
+        bitvector(uint32_t * bits, size_t num_bits)
+        :   m_bitCount(num_bits), 
+            m_bits(bits, bits + GetNumIntegersForBitcount(num_bits))
         {}
 
         void push_back(bool b)
@@ -100,8 +100,11 @@ namespace basis
 
         bool test_all(bool b)
         { 
-            int testVal = b ? ~0 : 0;
-            size_t last = m_bits.size() - 1;
+            uint32_t testVal = b ? ~0 : 0;
+            size_t last = m_bitCount / INT_BITS;
+            
+            BASIS_ASSERT(last <= m_bits.size());
+
             for (size_t i=0; i<last; i++)
             {
                 if (m_bits[i] != testVal)
@@ -110,8 +113,12 @@ namespace basis
                 }
             }
 
-            int mask = (1 << (m_bitCount % INT_BITS)) - 1;
-            return (m_bits[last] & mask) == (testVal & mask);
+            uint32_t remainder = m_bitCount & 31;
+            if (remainder != 0) {
+                uint32_t mask = (1 << remainder) - 1;
+                return (m_bits[last + 1] & mask) == (testVal & mask);
+            }
+            return true;
         }
 
         bitvector operator | (const bitvector & b) const
@@ -121,7 +128,7 @@ namespace basis
             size_t min_ints = GetNumIntegersForBitcount(min_bits);
             size_t max_ints = GetNumIntegersForBitcount(max_bits);
 
-            int * bits = new int[max_ints];
+            uint32_t * bits = new uint32_t[max_ints];
             for (size_t i=0; i<min_ints; i++)
             {
                 bits[i] = m_bits[i] | b.m_bits[i];
@@ -142,7 +149,7 @@ namespace basis
             size_t min_ints = GetNumIntegersForBitcount(min_bits);
             size_t max_ints = GetNumIntegersForBitcount(max_bits);
 
-            int * bits = new int[max_ints];
+            uint32_t * bits = new uint32_t[max_ints];
             memset(bits, 0, sizeof(int) * max_ints);
             for (size_t i=0; i<min_ints; i++)
             {
@@ -159,7 +166,7 @@ namespace basis
             size_t min_ints = GetNumIntegersForBitcount(min_bits);
             size_t max_ints = GetNumIntegersForBitcount(max_bits);
 
-            int * bits = new int[max_ints];
+            uint32_t * bits = new uint32_t[max_ints];
             for (size_t i=0; i<min_ints; i++)
             {
                 bits[i] = m_bits[i] ^ b.m_bits[i];
@@ -179,8 +186,8 @@ namespace basis
         }
 
     private:
-        size_t                m_bitCount;
-        std::vector<int>    m_bits;
+        size_t                  m_bitCount;
+        std::vector<uint32_t>   m_bits;
 
         void bit_index_to_coordinates(size_t bit, size_t * int_index, size_t * bit_index) const
         {
@@ -197,7 +204,7 @@ namespace basis
             return (num_bits + (INT_BITS - 1)) / INT_BITS;
         }
 
-        static const size_t INT_BITS = (sizeof(int) * 8);
+        static constexpr size_t INT_BITS = 32;
     };
 }
  
