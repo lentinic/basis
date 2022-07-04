@@ -13,7 +13,9 @@ namespace basis
     {
 #if defined(_MSC_VER)
         __debugbreak();
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) || defined(__clang__)
+        __builtin_trap();
+#elif defined(__x86_64__) || defined(__i386__)
         __asm__ ("int $3");
 #else
         *((int *) 0) = 3;
