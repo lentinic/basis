@@ -9,8 +9,7 @@ This source code is licensed under the MIT license (found in the LICENSE file in
 
 #include <stdio.h>
 
-#include "debug.h"
-#include "macros.h"
+#include "macros.h" 
 #include "timer.h"
 
 #define BASIS_TEST_LIST_BEGIN() \
