@@ -11,16 +11,19 @@ This source code is licensed under the MIT license (found in the LICENSE file in
 
 namespace basis
 {
-    template<class T, class STORAGE = uint32_t, unsigned ID_BITS = 24, unsigned GEN_BITS = 8>
-    struct handle
+    template<class T, class STORAGE>
+    class handle
     {
-        static_assert((ID_BITS + GEN_BITS) == (sizeof(STORAGE) * 8), 
-            "handle bit total must match the specified storage type");
+    public:
+        operator bool () const { return m_data != 0; }
 
-        STORAGE    id : ID_BITS;
-        STORAGE    generation : GEN_BITS;
+    private:
+        STORAGE m_data {};
 
-        static const uint32_t max_id = ((1 << ID_BITS) - 1);
+        template<class U> friend class object_table;
     };
+
+    template<class T> using handle32_t = handle<T, uint32_t>;
+    template<class T> using handle64_t = handle<T, uint64_t>;
 }
  

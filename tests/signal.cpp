@@ -1,9 +1,5 @@
 #include <basis/assert.h>
 #include <basis/signal.h>
-#include <iostream>
-
-using namespace std;
-
 
 int number = 0;
 
@@ -34,22 +30,11 @@ int main(int argc, char * argv[])
     
     basis::signal<void()> sig;
 
-    basis::handle h0 = sig.connect(&Handler0);
-    basis::handle h1 = sig.connect(&Handler1);
-    basis::handle h2 = sig.connect(&Handler2);
-    basis::handle h3 = sig.connect(&Handler3);
-    basis::handle h4 = sig.connect(&Handler3);
-
-    BASIS_ASSERT(h0.id != h1.id);
-    BASIS_ASSERT(h0.id != h2.id);
-    BASIS_ASSERT(h0.id != h3.id);
-    BASIS_ASSERT(h0.id != h4.id);
-    BASIS_ASSERT(h1.id != h2.id);
-    BASIS_ASSERT(h1.id != h3.id);
-    BASIS_ASSERT(h1.id != h4.id);
-    BASIS_ASSERT(h2.id != h3.id);
-    BASIS_ASSERT(h2.id != h4.id);
-    BASIS_ASSERT(h3.id != h4.id);
+    auto h0 = sig.connect(&Handler0);
+    auto h1 = sig.connect(&Handler1);
+    auto h2 = sig.connect(&Handler2);
+    auto h3 = sig.connect(&Handler3);
+    auto h4 = sig.connect(&Handler3);
 
     sig();
 

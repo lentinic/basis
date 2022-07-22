@@ -20,14 +20,15 @@ namespace basis
     class signal<void(PARAMETERS...)>
     {
     public:
-        typedef std::function<void(PARAMETERS...)> function_type;
+        using function_t = std::function<void(PARAMETERS...)>;
+        using handle_t = handle32_t<function_t>;
 
-        handle connect(function_type fn)
+        handle_t connect(function_t fn)
         {
             return m_listeners.add(fn);
         }
 
-        void disconnect(handle id)
+        void disconnect(handle_t id)
         {
             m_listeners.remove(id);
         }
@@ -46,6 +47,6 @@ namespace basis
         }
 
     private:
-        object_table<function_type> m_listeners;
+        object_table<function_t> m_listeners;
     };
 }

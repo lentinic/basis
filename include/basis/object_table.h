@@ -17,82 +17,94 @@ This source code is licensed under the MIT license (found in the LICENSE file in
 
 namespace basis
 {
-    template<class DATA_TYPE>
+    template<class data_t>
     class object_table
     {
     public:
+        using handle_t = handle32_t<data_t>;
+
+    public:
         object_table()
-            :    m_freelist(0)
+        :    m_freelist(0)
         {}
         
         explicit object_table(size_t reserve)
-            :    m_objects(count),
-                m_external(count),
-                m_internal(count),
-                m_freelist(0)
+        :   m_objects(count),
+            m_external(count),
+            m_internal(count),
+            m_freelist(0)
         {}
 
-        handle add(const DATA_TYPE & o)
+        handle_t add(const data_t & o)
         {
-            handle h = alloc_handle();
+            handle_t h = alloc_handle();
             m_objects.push_back(o);
             m_external.push_back(h);
 
             return h;
         }
 
-        handle add(DATA_TYPE && o)
+        handle_t add(data_t && o)
         {
-            handle h = alloc_handle();
+            handle_t h = alloc_handle();
             m_objects.push_back(o);
             m_external.push_back(h);
 
             return h;
         }
 
-        void remove(handle h)
+        void remove(handle_t h)
         {
             BASIS_ASSERT(exists(h));
 
-            handle internal = m_internal[h.id];
-
+            handle_view vh(h);
+            handle_view vi(m_internal[vh.id]);
+            
             uint32_t last = (uint32_t)(m_objects.size() - 1);
 
-            if (internal.id < last)
+            if (vi.id < last)
             {
-                m_objects[internal.id] = std::move(m_objects[last]);
-                m_external[internal.id] = m_external[last];
-                m_internal[m_external[last].id].id = internal.id;
+                m_objects[vi.id] = std::move(m_objects[last]);
+                m_external[vi.id] = m_external[last];
+
+                handle_view vel(m_external[last]);
+                handle_view vil(m_internal[vel.id]);
+                vil.id = vi.id;
+                m_internal[vel.id] = vil.handle;
             }
 
             m_objects.pop_back();
             m_external.pop_back();
 
-            internal.id = m_freelist;
-            internal.generation++;
-            m_internal[h.id] = internal;
-            m_freelist = h.id;
+            vi.id = m_freelist;
+            vi.generation++;
+            m_internal[vh.id] = vi.handle;
+            m_freelist = vh.id;
         }
 
-        bool exists(handle h) const
+        bool exists(handle_t h) const
         {
-            if (h.id >= m_internal.size())
+            handle_view view(h);
+
+            if (view.id >= m_internal.size())
                 return false;
             
-            if (h.generation != m_internal[h.id].generation)
+            if (view.generation != handle_view(m_internal[view.id]).generation)
                 return false;
 
-            BASIS_ASSERT(m_internal[h.id].id < m_external.size());
-            BASIS_ASSERT(m_external[m_internal[h.id].id].id == h.id);
-            BASIS_ASSERT(m_external[m_internal[h.id].id].generation == h.generation);
+            BASIS_ASSERT(handle_view(m_internal[view.id]).id < m_external.size());
+            BASIS_ASSERT(handle_view(m_external[handle_view(m_internal[view.id]).id]).id == view.id);
+            BASIS_ASSERT(handle_view(m_external[handle_view(m_internal[view.id]).id]).generation == view.generation);
 
             return true;
         }
 
-        DATA_TYPE & lookup(handle h) const
+        data_t & lookup(handle_t h) const
         {
             BASIS_ASSERT(exists(h));
-            return m_objects[m_internal[h.id].id];
+            
+            handle_view internal(m_internal[handle_view(h).id]);
+            return m_objects[internal.id];
         }
 
         void clear()
@@ -105,11 +117,11 @@ namespace basis
 
         uint32_t count() const
         {
-            return m_objects.size();
+            return (uint32_t) m_objects.size();
         }
 
-        typedef typename std::vector<DATA_TYPE>::iterator iterator;
-        typedef typename std::vector<DATA_TYPE>::const_iterator const_iterator;
+        typedef typename std::vector<data_t>::iterator iterator;
+        typedef typename std::vector<data_t>::const_iterator const_iterator;
 
         iterator begin() { return m_objects.begin(); }
         const_iterator begin() const { return m_objects.begin(); }
@@ -119,12 +131,36 @@ namespace basis
         const iterator cend() const { return m_objects.cend(); }
 
     private:
-        std::vector<DATA_TYPE>     m_objects;
-        std::vector<handle>        m_external;
-        std::vector<handle>        m_internal;
+        std::vector<data_t>        m_objects;
+        std::vector<handle_t>      m_external;
+        std::vector<handle_t>      m_internal;
         uint32_t                   m_freelist;
 
-        handle alloc_handle()
+        struct handle_view
+        {
+            handle_view(handle_t h) 
+            :   handle(h) 
+            {}
+            
+            handle_view(uint32_t id, uint32_t gen)
+            :   id(id),
+                generation(gen)
+            {}
+
+            union
+            {
+                handle_t handle;
+                struct
+                {
+                    uint32_t id         : 24;
+                    uint32_t generation : 8;
+                };
+            };
+
+            static constexpr uint32_t max_id = (1<<24) - 1;
+        };
+
+        handle_t alloc_handle()
         {
             uint32_t index = m_freelist;
 
@@ -132,18 +168,22 @@ namespace basis
 
             if (index == m_internal.size())
             {
-                BASIS_ASSERT(index <= handle::max_id);
-                handle internal = { (uint32_t) m_objects.size(), 0 };
-                handle external = { index, 0 };
+                BASIS_ASSERT(index <= handle_view::max_id);
+
+                handle_t internal = handle_view((uint32_t) m_objects.size(), 0).handle;
+                handle_t external = handle_view(index, 0).handle;
+                
                 m_internal.push_back(internal);
                 m_freelist++;
+
                 return external;
             }
             
-            handle internal = m_internal[index];
-            handle external = { index, internal.generation };
-            internal.id = m_objects.size();
-            m_internal[index] = internal;
+            handle_view internal(m_internal[index]);
+            internal.id = (uint32_t) m_objects.size();
+            m_internal[index] = internal.handle;
+
+            handle_t external = handle_view(index, internal.generation).handle;
             return external;
         }
     };
