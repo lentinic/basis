@@ -11,5 +11,5 @@
 *.filters
 *.user
 
-bin/*
-intermediate/*
+*/bin/*
+*/intermediate/*
