@@ -11,5 +11,5 @@
 *.filters
 *.user
 
-t2-output/*
-*.tundra2.*
+bin/*
+intermediate/*
