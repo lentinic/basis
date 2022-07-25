@@ -116,7 +116,7 @@ namespace basis
             uint32_t remainder = m_bitCount & 31;
             if (remainder != 0) {
                 uint32_t mask = (1 << remainder) - 1;
-                return (m_bits[last + 1] & mask) == (testVal & mask);
+                return (m_bits[last] & mask) == (testVal & mask);
             }
             return true;
         }
