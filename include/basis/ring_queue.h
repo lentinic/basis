@@ -23,7 +23,7 @@ namespace basis
         struct ring_slot
         {
             TYPE                    m_data;
-            std::atomic<uint32_t>    m_state;
+            std::atomic<uint32_t>   m_state;
         };
     }
 
@@ -261,10 +261,10 @@ namespace basis
     {
     public:
         explicit ring_queue(uint32_t size)
-            :    m_items(new internal::ring_slot<TYPE>[size]),
-                m_size(size),
-                m_head(0),
-                m_tail(0)
+        :   m_items(new internal::ring_slot<TYPE>[size]),
+            m_size(size),
+            m_head(0),
+            m_tail(0)
         {
             for (uint32_t i = 0; i < size; i++)
             {
@@ -348,9 +348,9 @@ namespace basis
         ring_queue(const ring_queue &) = delete;
         ring_queue & operator = (const ring_queue &) = delete;
 
-        internal::ring_slot<TYPE> *    m_items;
-        const uint32_t                 m_size;
-        std::atomic<uint32_t>        m_head;
-        std::atomic<uint32_t>        m_tail;
+        internal::ring_slot<TYPE> * m_items;
+        const uint32_t              m_size;
+        std::atomic<uint32_t>       m_head;
+        std::atomic<uint32_t>       m_tail;
     };
 }

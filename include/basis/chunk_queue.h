@@ -26,8 +26,8 @@ namespace basis
         struct chunk_block
         {
             chunk_block(uint32_t size)
-                :    ring(size),
-                    next(nullptr)
+            :   ring(size),
+                next(nullptr)
             {}
 
             static chunk_block * lock_acquire(std::atomic<chunk_block *> & node, std::atomic<uint32_t> & lock)
@@ -54,7 +54,7 @@ namespace basis
                     cpu_yield();
             }
 
-            ring_queue<TYPE,ACCESS>        ring;
+            ring_queue<TYPE,ACCESS>       ring;
             std::atomic<chunk_block *>    next;
         };
     }
@@ -274,11 +274,11 @@ namespace basis
     {
     public:
         explicit chunk_queue(uint32_t chunk_size)
-            :    m_lockTail(0),
-                m_lockHead(0),
-                m_head(new chunk_block(chunk_size)),
-                m_tail(m_head.load()),
-                m_chunkSize(chunk_size)
+        :   m_lockTail(0),
+            m_lockHead(0),
+            m_head(new chunk_block(chunk_size)),
+            m_tail(m_head.load()),
+            m_chunkSize(chunk_size)
         {}
 
         template<class U>
@@ -354,10 +354,10 @@ namespace basis
 
         typedef internal::chunk_block<TYPE, queue_access_policy::mpmc> chunk_block;
 
-        std::atomic<uint32_t>        m_lockTail;
-        std::atomic<uint32_t>        m_lockHead;
-        std::atomic<chunk_block *>    m_head;
-        std::atomic<chunk_block *>    m_tail;
-        const uint32_t                m_chunkSize;
+        std::atomic<uint32_t>       m_lockTail;
+        std::atomic<uint32_t>       m_lockHead;
+        std::atomic<chunk_block *>  m_head;
+        std::atomic<chunk_block *>  m_tail;
+        const uint32_t              m_chunkSize;
     };
 }
