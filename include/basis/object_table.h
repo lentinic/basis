@@ -99,7 +99,15 @@ namespace basis
             return true;
         }
 
-        data_t & lookup(handle_t h) const
+        const data_t & lookup(handle_t h) const
+        {
+            BASIS_ASSERT(exists(h));
+            
+            handle_view internal(m_internal[handle_view(h).id]);
+            return m_objects[internal.id];
+        }
+
+        data_t & lookup(handle_t h)
         {
             BASIS_ASSERT(exists(h));
             
