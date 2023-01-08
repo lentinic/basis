@@ -15,8 +15,11 @@ namespace basis
     class handle
     {
     public:
-        operator bool () const { return m_data != 0; }
+        handle(STORAGE id) : m_data(id) {}
 
+        operator bool () const { return m_data != 0; }
+        operator STORAGE () const { return m_data; }
+        
     private:
         STORAGE m_data {};
 
