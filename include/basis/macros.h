@@ -29,3 +29,12 @@ This source code is licensed under the MIT license (found in the LICENSE file in
 
 #define BASIS_CONCAT_BASE(x,y) x ## y
 #define BASIS_CONCAT(x,y) BASIS_CONCAT_BASE(x,y)
+
+#if defined(_MSC_VER)
+#define BASIS_NOINLINE __declspec(noinline)
+#elif defined(__GNUC__) || defined(__clang__)
+#define BASIS_NOINLINE __attribute__((noinline))
+#else
+#define BASIS_NOINLINE
+#endif
+
