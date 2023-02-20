@@ -1,7 +1,6 @@
 # build options
 CONFIG ?= debug
-PLATFORM ?= 
-ARCH ?=
+PLATFORM ?= posix
 
 SOURCES :=
 DEFINES := 
@@ -32,9 +31,9 @@ OBJECTS =
 
 PROGRAMS := bitvector shared_mutex signal
 
-bitvector: SOURCES += tests/bitvector.cpp
-shared_mutex: SOURCES += tests/shared_mutex.cpp
-signal: SOURCES += tests/signal.cpp
+bitvector:      SOURCES += tests/bitvector.cpp
+shared_mutex:   SOURCES += tests/shared_mutex.cpp
+signal:         SOURCES += tests/signal.cpp
 
 OBJECTS += $(SOURCES:%.cpp=$(INTERMEDIATE_DIR)/%.o)
 
